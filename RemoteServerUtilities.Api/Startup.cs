@@ -16,7 +16,7 @@ namespace RemoteServerUtilities.Api
         {
             Configuration = configuration;
             _allowedDomains = env.IsProduction() ?
-            new string[] { "https://www.cross-arm.com" } : new string[] { "http://localhost:4300", "http://localhost:4200", "http://localhost:4100" };
+            new string[] { "" } : new string[] { "http://localhost:4300", "http://localhost:4200", "http://localhost:4100" };
         }
 
         public IConfiguration Configuration { get; }
@@ -27,10 +27,10 @@ namespace RemoteServerUtilities.Api
             services.AddScoped<IEventLoggerService, EventLoggerService>();
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
-            //services.AddSpaStaticFiles(configuration =>
-            //{
-            //    configuration.RootPath = "ClientApp/dist";
-            //});
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
+            });
             services.AddCors(options =>
             {
                 options.AddPolicy(_myAllowSpecificOrigins,
@@ -53,7 +53,7 @@ namespace RemoteServerUtilities.Api
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                //app.UseHsts();
+                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
@@ -71,19 +71,14 @@ namespace RemoteServerUtilities.Api
                     name: "default",
                     pattern: "{controller}/{route}/{id?}");
             });
-            
-            //app.UseSpa(spa =>
-            //{
-            //    // To learn more about options for serving an Angular SPA from ASP.NET Core,
-            //    // see https://go.microsoft.com/fwlink/?linkid=864501
 
-            //    spa.Options.SourcePath = "ClientApp";
+            app.UseSpa(spa =>
+            {
+                // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                // see https://go.microsoft.com/fwlink/?linkid=864501
 
-            //    if (env.IsDevelopment())
-            //    {
-            //        spa.UseAngularCliServer(npmScript: "start");
-            //    }
-            //});
+                spa.Options.SourcePath = "ClientApp";               
+            });
         }
     }
 }

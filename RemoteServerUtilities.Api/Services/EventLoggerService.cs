@@ -18,7 +18,7 @@ namespace RemoteServerUtilities.Api
 
             EventLog[] remoteEventLogs;
 
-            remoteEventLogs = EventLog.GetEventLogs("DESKTOP-L9O20VR");
+            remoteEventLogs = EventLog.GetEventLogs("V091400425");
             List<LogSourceView> logs = new List<LogSourceView>();
             foreach (EventLog log in remoteEventLogs)
             {

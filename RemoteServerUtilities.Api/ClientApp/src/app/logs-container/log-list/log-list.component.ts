@@ -36,7 +36,7 @@ export class LogListComponent implements OnInit {
   }
 
   download() {
-   alert('Not implemented yet. And may never will.')
+   alert('Not implemented yet. And may never happend.')
   }
 
   copyMessage(value: string) {
