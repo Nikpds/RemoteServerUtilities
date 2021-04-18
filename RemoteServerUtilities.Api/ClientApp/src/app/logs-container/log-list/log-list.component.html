@@ -1,0 +1,69 @@
+<div *ngIf="logEntries?.length > 0">
+  <div class="columns is-gapless">
+    <div class="column">
+      <span class="title is-3">Source: {{ source }}</span>
+    </div>
+    <div class="column is-narrow">
+      <div class="buttons">
+        <button class="button is-info" (click)="refreshLogs()">
+          <span class="icon is-small">
+            <i class="material-icons">sync</i>
+          </span>
+          <span>Refresh</span>
+        </button>
+        <button class="button is-danger" (click)="clearLogs()">
+          <span class="icon is-small">
+            <i class="material-icons">delete_sweep</i>
+          </span>
+          <span>Clear</span>
+        </button>
+        <button class="button is-primary" (click)="download()">
+          <span class="icon is-small">
+            <i class="material-icons">file_download</i>
+          </span>
+          <span>Download</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <table class="table is-fullwidth is-striped">
+    <thead>
+      <tr>
+        <th width="180">Created</th>
+        <th width="100">Level</th>
+        <th>Message</th>
+        <th title="Copy Message" width="60">
+          <i class="material-icons">content_copy</i>
+        </th>
+        <th width="100">Category</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of logEntries">
+        <td>{{ log.created | date: "dd/MM/yyyy , HH:mm" }}</td>
+        <td>
+          <span class="tag {{ levelColor(log.entryType) }} is-fullwidth">{{
+            log.entryType
+          }}</span>
+        </td>
+        <td>{{ log.message }}</td>
+        <td>
+          <button
+            title="Copy Message"
+            class="button is-small is-white is-outlined"
+            (click)="copyMessage(log.message)"
+          >
+            <span class="icon is-small">
+              <i class="material-icons md-18">content_copy</i>
+            </span>
+          </button>
+        </td>
+        <td>{{ log.category }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="!logEntries || logEntries.length == 0" class="has-text-centered">
+  <img src="'../../../../../assets//empty_data_set.webp" />
+</div>

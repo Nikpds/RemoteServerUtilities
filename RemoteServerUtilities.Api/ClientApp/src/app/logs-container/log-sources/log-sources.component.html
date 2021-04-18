@@ -1,0 +1,41 @@
+<div class="field has-addons is-expanded mb-1">
+  <p class="control has-icons-left has-icons-right is-expanded">
+    <input
+      class="input"
+      type="text"
+      placeholder="Log Source"
+      [(ngModel)]="searchText"
+      (keyup)="searchSource($event)"
+      (focusout)="onFocusOutEvent()"
+      (focusin)="onFocusInEvent()"
+    />
+    <span class="icon is-small is-left">
+      <i class="material-icons">manage_search</i>
+    </span>
+    <span class="icon is-small is-right">
+      <i class="material-icons">search</i>
+    </span>
+  </p>
+  <div class="control">
+    <a class="button is-primary-dark" (click)="openSelectBox = !openSelectBox">
+      <span class="icon is-small">
+        <i class="material-icons">expand_more</i>
+      </span>
+    </a>
+  </div>
+</div>
+<div class="dropdownBox" *ngIf="openSelectBox">
+  <nav class="panel">
+    <a
+      class="panel-block"
+      *ngFor="let source of sources"
+      (click)="selectSource(source.name)"
+    >
+      <span class="panel-icon">
+        <i class="material-icons mr-2" style="font-size: 18px">dns</i>
+      </span>
+      ( {{ source.entries }}) {{ source.name }}
+    </a>
+  </nav>
+</div>
+<p>Uppon selection the last 50 logs will be displayed in the table below</p>

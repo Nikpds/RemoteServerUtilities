@@ -1,0 +1,16 @@
+<section class="hero is-medium is-primary">
+  <div class="hero-body">
+    <div class="container">
+      <p class="title">Event Viewer Logs</p>
+      <p class="subtitle">Search and select source from the dropdown</p>
+      <app-log-sources
+        (sourceSelectedEvent)="logList.getSources($event)"
+      ></app-log-sources>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <app-log-list #logList></app-log-list>
+  </div>
+</section>
