@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  api: 'http://localhost/RemoteServerUtilities.Api/api/',
+  api: 'https://CoreAppLayerQA.nbg.gr/usersDocuments.Api/api/',
 };
 
 /*

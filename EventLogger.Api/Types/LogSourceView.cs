@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace RemoteServerUtilities.Api
+namespace EventLogger.Api
 {
     public class LogSourceView
     {

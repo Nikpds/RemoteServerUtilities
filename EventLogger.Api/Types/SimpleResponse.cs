@@ -1,5 +1,5 @@
 ﻿
-namespace RemoteServerUtilities.Api
+namespace EventLogger.Api
 {
     public class SimpleResponse
     {

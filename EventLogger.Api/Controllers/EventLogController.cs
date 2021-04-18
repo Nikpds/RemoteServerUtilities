@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace RemoteServerUtilities.Api.Controllers
+namespace EventLogger.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

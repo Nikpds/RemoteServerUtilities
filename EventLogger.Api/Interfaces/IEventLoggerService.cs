@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RemoteServerUtilities.Api
+namespace EventLogger.Api
 {
     public interface IEventLoggerService
     {

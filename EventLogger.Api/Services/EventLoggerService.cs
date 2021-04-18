@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RemoteServerUtilities.Api
+namespace EventLogger.Api
 {
     public class EventLoggerService : IEventLoggerService
     {
@@ -17,8 +17,9 @@ namespace RemoteServerUtilities.Api
         {
 
             EventLog[] remoteEventLogs;
-
-            remoteEventLogs = EventLog.GetEventLogs("V091400425");
+            //V0000AA077.nbgdmzqa.gr
+            //V091400425
+            remoteEventLogs = EventLog.GetEventLogs("V0000AA077.nbgdmzqa.gr");
             List<LogSourceView> logs = new List<LogSourceView>();
             foreach (EventLog log in remoteEventLogs)
             {
