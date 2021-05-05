@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  api: 'https://CoreAppLayerQA.nbg.gr/usersDocuments.Api/api/',
+  api: 'https://CoreAppLayerQA.nbg.gr/eventLogger.api/api/',
 };
 
 /*

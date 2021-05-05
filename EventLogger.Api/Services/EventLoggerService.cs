@@ -15,11 +15,10 @@ namespace EventLogger.Api
 
         public List<LogSourceView> GetLoggers()
         {
-
-            EventLog[] remoteEventLogs;
-            //V0000AA077.nbgdmzqa.gr
-            //V091400425
-            remoteEventLogs = EventLog.GetEventLogs("V0000AA077.nbgdmzqa.gr");
+            EventLog[] remoteEventLogs;            
+            var computerName = Environment.MachineName.ToString();
+            
+            remoteEventLogs = EventLog.GetEventLogs(computerName);
             List<LogSourceView> logs = new List<LogSourceView>();
             foreach (EventLog log in remoteEventLogs)
             {

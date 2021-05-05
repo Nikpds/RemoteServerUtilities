@@ -1,28 +1,29 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EventLogger.Api
 {
     public class Startup
     {
-        private readonly string _myAllowSpecificOrigins = "_myAllowSpecificOrigins";
-        private readonly string[] _allowedDomains;
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            Configuration = configuration;
-            _allowedDomains = env.IsProduction() ?
-            new string[] { "http://localhost:4200" } : new string[] { "http://localhost:4200" };
+            Configuration = configuration;         
         }
 
         public IConfiguration Configuration { get; }
@@ -33,40 +34,84 @@ namespace EventLogger.Api
             services.AddScoped<IEventLoggerService, EventLoggerService>();
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
-
-            services.AddCors(options =>
+            services.AddHealthChecks();
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
-                options.AddPolicy(_myAllowSpecificOrigins,
-                builder =>
+                builder.WithOrigins("https://ibankretailqa.cms.nbg.gr/")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
+        }
+
+        private static Task WriteResponse(HttpContext context, HealthReport result)
+        {
+            context.Response.ContentType = "application/json; charset=utf-8";
+
+            var options = new JsonWriterOptions
+            {
+                Indented = true
+            };
+
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new Utf8JsonWriter(stream, options))
                 {
-                    builder.WithOrigins(_allowedDomains).AllowAnyHeader().AllowAnyMethod();
-                });
-            });
+                    writer.WriteStartObject();
+                    writer.WriteString("status", result.Status.ToString());
+                    writer.WriteStartObject("results");
+                    foreach (var entry in result.Entries)
+                    {
+                        writer.WriteStartObject(entry.Key);
+                        writer.WriteString("status", entry.Value.Status.ToString());
+                        writer.WriteString("description", entry.Value.Description);
+                        writer.WriteStartObject("data");
+                        foreach (var item in entry.Value.Data)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            JsonSerializer.Serialize(
+                                writer, item.Value, item.Value?.GetType() ??
+                                typeof(object));
+                        }
+                        writer.WriteEndObject();
+                        writer.WriteEndObject();
+                    }
+                    writer.WriteEndObject();
+                    writer.WriteEndObject();
+                }
+
+                var json = Encoding.UTF8.GetString(stream.ToArray());
+
+                return context.Response.WriteAsync(json);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(_myAllowSpecificOrigins);
+            app.UseCors("MyPolicy");
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
-
+           
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
 
                 // register health check endpoint
                 endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+                {
+                    ResponseWriter = WriteResponse
+                }
                 );
             });
         }
+       
     }
 }

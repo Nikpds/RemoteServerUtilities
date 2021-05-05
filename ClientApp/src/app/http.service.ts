@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { LoaderService } from './loader.service';
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { IDataLoader, DataLoader } from './models/common';
 import { NotifyService } from './notify.service';
+const headers = new HttpHeaders()
+  .append('Content-Type', 'application/json')
+  .append('Access-Control-Allow-Origin', '*');
 @Injectable()
 export class HTTPService {
   private baseUrl = environment.api;
@@ -18,14 +21,16 @@ export class HTTPService {
 
   get<T>(url: string, customerLoader: IDataLoader = new DataLoader()) {
     this._handleLoader(true, customerLoader);
-    return this.http.get<T>(`${this.baseUrl}${url}`).pipe(
-      map((res) => {
-        console.log(res);
-        this._handleLoader(false, customerLoader);
-        return this._handleResponse(res);
-      }),
-      catchError((err) => this.errorHandler(err, customerLoader))
-    );
+    return this.http
+      .get<T>(`${this.baseUrl}${url}`, { headers })
+      .pipe(
+        map((res) => {
+          console.log(res);
+          this._handleLoader(false, customerLoader);
+          return this._handleResponse(res);
+        }),
+        catchError((err) => this.errorHandler(err, customerLoader))
+      );
   }
 
   post<T>(
@@ -34,13 +39,15 @@ export class HTTPService {
     customerLoader: IDataLoader = new DataLoader()
   ) {
     this._handleLoader(true, customerLoader);
-    return this.http.post<T>(`${this.baseUrl}${url}`, body).pipe(
-      map((res) => {
-        this._handleLoader(false, customerLoader);
-        return this._handleResponse(res);
-      }),
-      catchError((err) => this.errorHandler(err, customerLoader))
-    );
+    return this.http
+      .post<T>(`${this.baseUrl}${url}`, body, { headers })
+      .pipe(
+        map((res) => {
+          this._handleLoader(false, customerLoader);
+          return this._handleResponse(res);
+        }),
+        catchError((err) => this.errorHandler(err, customerLoader))
+      );
   }
 
   put<T>(
@@ -49,24 +56,28 @@ export class HTTPService {
     customerLoader: IDataLoader = new DataLoader()
   ) {
     this._handleLoader(true, customerLoader);
-    return this.http.put<T>(`${this.baseUrl}${url}`, body).pipe(
-      map((res) => {
-        this._handleLoader(false, customerLoader);
-        return res;
-      }),
-      catchError((err) => this.errorHandler(err, customerLoader))
-    );
+    return this.http
+      .put<T>(`${this.baseUrl}${url}`, body, { headers })
+      .pipe(
+        map((res) => {
+          this._handleLoader(false, customerLoader);
+          return res;
+        }),
+        catchError((err) => this.errorHandler(err, customerLoader))
+      );
   }
 
   delete<T>(url: string, customerLoader: IDataLoader = new DataLoader()) {
     this._handleLoader(true, customerLoader);
-    return this.http.delete<T>(`${this.baseUrl}${url}`).pipe(
-      map((res) => {
-        this._handleLoader(false, customerLoader);
-        return res;
-      }),
-      catchError((err) => this.errorHandler(err, customerLoader))
-    );
+    return this.http
+      .delete<T>(`${this.baseUrl}${url}`, { headers })
+      .pipe(
+        map((res) => {
+          this._handleLoader(false, customerLoader);
+          return res;
+        }),
+        catchError((err) => this.errorHandler(err, customerLoader))
+      );
   }
 
   private _handleResponse(result: any) {

@@ -3,7 +3,28 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>9cd12422-cc36-4f1e-bdfb-13c88dc4465b</UserSecretsId>
+    <Configurations>Development;Release</Configurations>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.0" />
+    <PackageReference Include="NLog.WindowsEventLog" Version="4.6.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="nlog - Copy %282%29.QaCore.config">
+      <DependentUpon>nlog.qacore.config</DependentUpon>
+    </Content>
+    <Content Update="nlog - Copy - Copy.QaCore.config">
+      <DependentUpon>nlog - Copy.QaCore.config</DependentUpon>
+    </Content>
+    <Content Update="nlog - Copy.QaCore.config">
+      <DependentUpon>nlog.qacore.config</DependentUpon>
+    </Content>
+    <Content Update="nlog - Copy.QaProxy.config">
+      <DependentUpon>nlog.qaproxy.config</DependentUpon>
+    </Content>
+  </ItemGroup>
 
 
 </Project>
